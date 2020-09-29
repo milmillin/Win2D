@@ -1273,6 +1273,11 @@ namespace Microsoft.Graphics.Canvas
             [in] Microsoft.Graphics.Canvas.Geometry.CanvasCachedGeometry* geometry,
             [in] Windows.UI.Color color);
 
+        [overload("DrawPdf")]
+        HRESULT DrawPdf(
+          [in] Windows.Data.Pdf.PdfPage* pdfPage
+        );
+
         //
         // DrawTextLayout
         //

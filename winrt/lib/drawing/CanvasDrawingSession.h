@@ -9,6 +9,7 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas
     using namespace ABI::Microsoft::Graphics::Canvas::Geometry;
     using namespace ABI::Microsoft::Graphics::Canvas::Numerics;
     using namespace ABI::Windows::Foundation;
+    using namespace ABI::Windows::Data::Pdf;
 
 #if WINVER > _WIN32_WINNT_WINBLUE
     using namespace ABI::Windows::UI::Input::Inking;
@@ -80,6 +81,7 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas
         //
         ComPtr<ICanvasDevice> m_owner;
 
+        ComPtr<IPdfRendererNative> m_pdfRenderer;
 #if WINVER > _WIN32_WINNT_WINBLUE
         ComPtr<IInkD2DRenderer> m_inkD2DRenderer;
         ComPtr<ID2D1DrawingStateBlock1> m_inkStateBlock;
@@ -1165,6 +1167,13 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas
             ICanvasCachedGeometry* cachedGeometry,
             ABI::Windows::UI::Color color) override;
 
+        //
+        // DrawPdf
+        //
+        IFACEMETHOD(DrawPdf)(
+          ABI::Windows::Data::Pdf::IPdfPage* pdfPage
+          ) override;
+
 #if WINVER > _WIN32_WINNT_WINBLUE
         //
         // DrawInk
@@ -1435,6 +1444,10 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas
 
         ID2D1SolidColorBrush* GetColorBrush(ABI::Windows::UI::Color const& color);
         ComPtr<ID2D1Brush> ToD2DBrush(ICanvasBrush* brush);
+
+        void DrawPdfImpl(
+          ABI::Windows::Data::Pdf::IPdfPage* pdfPage
+        );
 
         HRESULT DrawImageImpl(
             ICanvasImage* image,

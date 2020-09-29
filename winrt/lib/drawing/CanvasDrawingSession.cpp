@@ -183,6 +183,7 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas
                 m_solidColorBrush.Reset();
                 m_defaultTextFormat.Reset();
                 m_owner.Reset();
+                m_pdfRenderer.Reset();
 #if WINVER > _WIN32_WINNT_WINBLUE
                 m_inkD2DRenderer.Reset();
                 m_inkStateBlock.Reset();
@@ -3275,6 +3276,53 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas
             GetWrappedResource<ID2D1GeometryRealization>(cachedGeometry).Get(),
             brush);
     }
+
+    IFACEMETHODIMP CanvasDrawingSession::DrawPdf(
+      ABI::Windows::Data::Pdf::IPdfPage* pdfPage)
+    {
+      return ExceptionBoundary(
+        [&]
+        {
+          DrawPdfImpl(
+            pdfPage);
+        });
+    }
+
+    void CanvasDrawingSession::DrawPdfImpl(
+      ABI::Windows::Data::Pdf::IPdfPage* pdfPage
+    ) {
+      // Check argument validity
+      CheckInPointer(pdfPage);
+      ComPtr<IUnknown> pdfPageAsIUnknown = As<IUnknown>(pdfPage);
+
+      // Get ID2D1DeviceContext
+      auto& deviceContext = GetResource();
+
+      // Create m_pdfRenderer if null
+      if (!m_pdfRenderer) {
+        // Get IDXGIDevice
+        ComPtr<ID2D1Device> d2dDevice;
+        deviceContext->GetDevice(&d2dDevice);
+        ComPtr<ID2D1Device2> d2dDevice2 = As<ID2D1Device2>(d2dDevice);
+        ComPtr<IDXGIDevice> dxgiDevice;
+        ThrowIfFailed(d2dDevice2->GetDxgiDevice(&dxgiDevice));
+
+        // Create IPdfRendererNative
+        ThrowIfFailed(PdfCreateRenderer(
+          dxgiDevice.Get(),
+          &m_pdfRenderer
+        ));
+      }
+
+      // Render
+      ThrowIfFailed(m_pdfRenderer->RenderPageToDeviceContext(
+        pdfPageAsIUnknown.Get(),
+        deviceContext.Get(),
+        NULL
+      ));
+    }
+
+
 
 #if WINVER > _WIN32_WINNT_WINBLUE
     IFACEMETHODIMP CanvasDrawingSession::DrawInk(IIterable<InkStroke*>* inkStrokeCollection)
