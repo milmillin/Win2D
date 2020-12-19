@@ -14,9 +14,10 @@ Licensed under the MIT License. See LICENSE.txt in the project root for license 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="Page_Loaded">
 
     <Grid>
-        <canvas:CanvasControl x:Name="canvasControl" ClearColor="CornflowerBlue" Draw="canvasControl_Draw"/>
+        <canvas:CanvasSwapChainPanel x:Name="canvasControl" />
     </Grid>
 </Page>

@@ -22,6 +22,14 @@ namespace Microsoft.Graphics.Canvas.UI.Xaml
         // Removes the control from the visual tree.
         //
         HRESULT RemoveFromVisualTree();
+
+        //
+        // Calls through to this control's CanvasSwapChainPanel's
+        // CreateCoreIndpendentInputSource.
+        //
+        HRESULT CreateCoreIndependentInputSource(
+          [in] Windows.UI.Core.CoreInputDeviceTypes deviceTypes,
+          [out, retval] Windows.UI.Core.CoreIndependentInputSource** returnValue);
     };
 
     [version(VERSION), activatable(VERSION), marshaling_behavior(agile), threading(both)]

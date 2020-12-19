@@ -53,6 +53,10 @@ namespace ABI { namespace Microsoft { namespace Graphics { namespace Canvas { na
 
         IFACEMETHOD(RemoveFromVisualTree)() override;
 
+        IFACEMETHODIMP CreateCoreIndependentInputSource(
+          CoreInputDeviceTypes deviceType,
+          ICoreInputSourceBase** returnValue) override;
+
     private:
         HRESULT OnLoaded(IInspectable*, IRoutedEventArgs*);
     };

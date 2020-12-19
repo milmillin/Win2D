@@ -134,4 +134,24 @@ IFACEMETHODIMP CanvasSwapChainPanel::RemoveFromVisualTree()
         });
 }
 
+IFACEMETHODIMP CanvasSwapChainPanel::CreateCoreIndependentInputSource(
+  CoreInputDeviceTypes deviceTypes,
+  ICoreInputSourceBase** returnValue)
+{
+  return ExceptionBoundary(
+    [&]
+    {
+      // if (!m_canvasSwapChainPanel)
+      // {
+        // assert(GetAdapter()->IsDesignModeEnabled());
+        // When running in the designer there is no swap chain panel and
+        // we don't support CreateCoreIndependentInputSource.
+        // ThrowHR(E_NOTIMPL);
+      // }
+
+      auto swapChainPanel = As<ISwapChainPanel>(this);
+      ThrowIfFailed(swapChainPanel->CreateCoreIndependentInputSource(deviceTypes, returnValue));
+    });
+}
+
 ActivatableClassWithFactory(CanvasSwapChainPanel, CanvasSwapChainPanelFactory);
